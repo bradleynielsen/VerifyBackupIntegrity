@@ -45,28 +45,25 @@ function getnerate-HashTable {
 }
 
 
-$sourceResultsArray = getnerate-HashTable -FileList $sourceFileList
-#$destinationResultsArray = getnerate-HashTable -FileList $destinationFileList -ResultsArray $destinationResultsArray
-
-
+$sourceResultsArray      = getnerate-HashTable -FileList $sourceFileList
+$destinationResultsArray = getnerate-HashTable -FileList $destinationFileList
 
 <#
-foreach ($file in $destinationFileList) {
-	#Getting file hash Using MD5 for speed
-    $fileHash = Get-FileHash $file.FullName -Algorithm MD5
-    
-    if ($fileHash){
-        $results = [PSCustomObject]@{
-            Path = $fileHash.Path
-            Hash = $fileHash.Hash
-        }
-        $destinationResultsArray += $results
-    } else {
-        
-    }
-}
+$sourceResultsArray 
+$destinationResultsArray
+
 
 
 #>
 
-$sourceResultsArray | sort Path
+
+foreach($element in $sourceResultsArray ){
+    if ($destinationResultsArray -contains $element){
+        
+    
+    }else{
+        "not found"
+    }
+    
+    
+}

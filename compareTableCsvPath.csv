@@ -1,0 +1,4 @@
+#TYPE System.Management.Automation.PSCustomObject
+"path","hash","SideIndicator"
+"\backup\test.txt","8AA061D4D70F76A8659C2E38D1C8EDB7","=>"
+"\backup\test.txt","098F6BCD4621D373CADE4E832627B4F6","<="

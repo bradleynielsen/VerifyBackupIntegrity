@@ -13,7 +13,7 @@ $destinationFileList = Get-ChildItem -Path $destinationPath -Recurse
 $sourceCsvPath      = "$PSScriptRoot\sourceHash.csv"
 $destinationCsvPath = "$PSScriptRoot\destinationHash.csv"
 
-
+$compareTableCsvPath = "$PSScriptRoot\compareTableCsvPath.csv"
 
 function getnerate-HashTable {
 
@@ -32,8 +32,9 @@ function getnerate-HashTable {
             $pathOnDisk = ($fileHash.Path).substring(2)
             #push file hash to table
             $results = [PSCustomObject]@{
-                Hash = $fileHash.Hash
                 Path = $pathOnDisk
+                Hash = $fileHash.Hash
+
             }
             $ResultsArray += $results
         } else {
@@ -45,25 +46,54 @@ function getnerate-HashTable {
 }
 
 
-$sourceResultsArray      = getnerate-HashTable -FileList $sourceFileList
-$destinationResultsArray = getnerate-HashTable -FileList $destinationFileList
+$sourceResultsArray      = getnerate-HashTable -FileList $sourceFileList      | sort Path
+$destinationResultsArray = getnerate-HashTable -FileList $destinationFileList | sort Path
+
+
+
+
+$comp = Compare-Object -ReferenceObject $sourceResultsArray -DifferenceObject $destinationResultsArray -Property path, hash
+
+
+$comp | Export-Csv $compareTableCsvPath
+
+notepad $compareTableCsvPath
+
+
+
 
 <#
-$sourceResultsArray 
-$destinationResultsArray
+$sourceResultsArray      | sort Path
+$destinationResultsArray | sort Path
+
+($sourceResultsArray      | sort Path)[0]
+($destinationResultsArray | sort Path)[0]
 
 
+($sourceResultsArray      | sort Path)[0].path -eq ($destinationResultsArray | sort Path)[0].path 
+
+
+$destinationResultsArray.IndexOf($sourceResultsArray[0])
+
+
+
+
+
+
+
+
+
+#init index counter
+$i = 0
+foreach($element in $sourceResultsArray ){
+    #$sourceResultsArray[$i]
+    
+    [array]::indexof($destinationResultsArray,$sourceResultsArray[$i])
+    
+
+    #increment index counter
+    $i++
+}
 
 #>
 
-
-foreach($element in $sourceResultsArray ){
-    if ($destinationResultsArray -contains $element){
-        
-    
-    }else{
-        "not found"
-    }
-    
-    
-}

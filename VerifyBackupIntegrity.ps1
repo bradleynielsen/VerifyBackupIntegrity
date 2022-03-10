@@ -1,18 +1,23 @@
-﻿
-#init
+﻿cls
+#init quick vars
+$Stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+$sourcePath          = "Z:\backup"
+$destinationPath     = "D:\backup"
+$sourceCsvPath       = "$PSScriptRoot\sourceHash.csv"
+$destinationCsvPath  = "$PSScriptRoot\destinationHash.csv"
+$compareTableCsvPath = "$PSScriptRoot\compareTableCsvPath.csv"
 
 
-$sourcePath      = "Z:\backup"
-$destinationPath = "D:\backup"
+#load file info into vars (long process)
 
+
+Write-Host (
+"Getting source file information
+Start time: " + (Get-Date -Format "HH:mm:ss")
+)
 
 $sourceFileList      = Get-ChildItem -Path $sourcePath -Recurse
 $destinationFileList = Get-ChildItem -Path $destinationPath -Recurse
-
-
-$sourceCsvPath      = "$PSScriptRoot\sourceHash.csv"
-$destinationCsvPath = "$PSScriptRoot\destinationHash.csv"
-
 
 
 function getnerate-HashTable {
@@ -32,8 +37,9 @@ function getnerate-HashTable {
             $pathOnDisk = ($fileHash.Path).substring(2)
             #push file hash to table
             $results = [PSCustomObject]@{
-                Hash = $fileHash.Hash
                 Path = $pathOnDisk
+                Hash = $fileHash.Hash
+
             }
             $ResultsArray += $results
         } else {
@@ -45,28 +51,27 @@ function getnerate-HashTable {
 }
 
 
-$sourceResultsArray = getnerate-HashTable -FileList $sourceFileList
-#$destinationResultsArray = getnerate-HashTable -FileList $destinationFileList -ResultsArray $destinationResultsArray
+$sourceResultsArray      = getnerate-HashTable -FileList $sourceFileList      | sort Path
+$destinationResultsArray = getnerate-HashTable -FileList $destinationFileList | sort Path
 
 
 
-<#
-foreach ($file in $destinationFileList) {
-	#Getting file hash Using MD5 for speed
-    $fileHash = Get-FileHash $file.FullName -Algorithm MD5
-    
-    if ($fileHash){
-        $results = [PSCustomObject]@{
-            Path = $fileHash.Path
-            Hash = $fileHash.Hash
-        }
-        $destinationResultsArray += $results
-    } else {
-        
-    }
-}
+
+$comp = Compare-Object -ReferenceObject $sourceResultsArray -DifferenceObject $destinationResultsArray -Property path, hash
 
 
-#>
+$comp | Export-Csv $compareTableCsvPath
 
-$sourceResultsArray | sort Path
+notepad $compareTableCsvPath
+
+$minutes = $Stopwatch.elapsed.Minutes
+$seconds = $Stopwatch.elapsed.Seconds
+
+
+"Complete."
+
+"End time: " + (Get-Date -Format 'HH:mm:ss')
+
+"Time elapsed: "
+$minutes.ToString() + " Minutes" 
+$seconds.ToString() + " Seconds" 

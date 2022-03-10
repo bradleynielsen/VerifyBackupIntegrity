@@ -1,6 +1,6 @@
 ﻿#User vars:
-$sourcePath          = "Z:\backup"
-$destinationPath     = "D:\backup"
+$sourcePath          = "Z:\"
+$destinationPath     = "D:\"
 
 
 

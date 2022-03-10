@@ -1,11 +1,15 @@
-﻿cls
-#init quick vars
-$Stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+﻿#User vars:
 $sourcePath          = "Z:\backup"
 $destinationPath     = "D:\backup"
+
+
+
+#init quick vars
+$Stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 $sourceCsvPath       = "$PSScriptRoot\sourceHash.csv"
 $destinationCsvPath  = "$PSScriptRoot\destinationHash.csv"
 $compareTableCsvPath = "$PSScriptRoot\compareTableCsvPath.csv"
+cls
 
 
 #load file info into vars (long process)
